@@ -31,8 +31,15 @@ class 로또생성기{
         
     }
     public String solution(){
-        String title = " ### Lotto Generator ### \n";
+        String title = " ###  로또 ### \n";
+        System.out.println("로또 구매");
+        System.out.println("원하는 숫자를 입력하시오. 단 범위는 1부터 8까지입니다. ");
+        Scanner scanner = new Scanner(System.in);
+        int input = scanner.nextInt();
+        System.out.println(String.format(" 당신이 입력한 번호는 %d 입니다.", input));
+
         String result = "";
+        System.out.println("로또 구매");
         int[] arr = new int[6];
         Random random = new Random();
         for(int i =0; i<=6; i++){
