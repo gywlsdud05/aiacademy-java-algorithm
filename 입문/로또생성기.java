@@ -32,42 +32,32 @@ class 로또생성기{
     }
     public String solution(){
         String title = " ###  로또 ### \n";
-        System.out.println("로또 구매");
-        System.out.println("원하는 숫자를 입력하시오. 단 범위는 1부터 8까지입니다. ");
-        Scanner scanner = new Scanner(System.in);
-        int input = scanner.nextInt();
-        System.out.println(String.format(" 당신이 입력한 번호는 %d 입니다.", input));
-
+        int[] myLotto = buyLotto();
         String result = "";
-        System.out.println("로또 구매");
-        int[] arr = new int[6];
+        System.out.println("== 로또 추첨 ==");
+        int[] originLotto = new int[6];
         Random random = new Random();
         for(int i =0; i<=6; i++){
-            int number = random.nextInt(45) + 1;
+            int number = random.nextInt(8) + 1;
            
             boolean check = false; // false가 중복되지 않은 값
-            check = contains(arr, number, check);
+            check = contains(originLotto, number, check);
                 if(check==false){
-                    arr[i] = number; // 중복되지 않았으니 배열에 담아라.
+                    originLotto[i] = number; // 중복되지 않았으니 배열에 담아라.
                 } else{
                     i--; // 중복됐으면 이번 회수는 무효로 하고 다시 뽑아라.
                 }
 
             }
 
-                    // 버블정렬이 들어갈 부분
-                    for(int j = 0; j< arr.length -1; j++){
-                        for(int i= 0; i < arr.length -1; i++){
-                        if(arr[i] > arr[i+1]){
-                            int temp = arr[i];
-                            arr[i] = arr[i+1];
-                            arr[i+1] = temp;
-                        }
-                    }
-                }
-        String answer = printArray(arr);
-        return title + answer;
-            }
+        // 버블정렬이 들어갈 부분
+        originLotto = bubbleSort(originLotto);
+        String answer = printArray(originLotto);
+        System.out.println();
+        int count = findSame(originLotto, myLotto);
+        result = rank(count);
+        return title + answer + result;
+    }
     /**
      * 배열 출력 메서드
      **/
@@ -88,7 +78,7 @@ class 로또생성기{
 /**
  * 중복체크 메서드
  */
-    public boolean contains(int[] arr, int number, boolean check ){
+    public boolean contains(int[] arr, int number, boolean check){
         for(int j = 0; j<6; j++){
             if(arr[j] == number){
                 check = true;
@@ -100,4 +90,64 @@ class 로또생성기{
     /**
      *  버블정렬
      */
+    public int[] bubbleSort(int[] arr){
+        for(int j = 0; j< arr.length ; j++){
+            for(int i= 0; i < arr.length -1; i++){
+                if(arr[i] > arr[i+1]){
+                int temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+    /**
+     * 로또 구매
+     */
+    public int[] buyLotto(){
+        int[] myLotto = new int[6];
+        for(int i=0; i<6;i++){
+            System.out.println("원하는 숫자를 입력하시오. 단 범위는 1부터 8까지입니다. ");
+            Scanner scanner = new Scanner(System.in);
+            int input = scanner.nextInt();
+            myLotto[i] = input;
+        }
+        String answer = printArray(myLotto);
+        System.out.println(answer);
+        return null;
+    }
+    public int findSame(int[] originLotto, int[] myLotto){
+        int count = 0;
+        for(int i = 0; i < originLotto.length; i++){
+            for (int j = 0; j < myLotto.length; j++){
+                if(originLotto[i] == myLotto[j]){
+                    count++;
+                }
+            }
+        }
+    
+  
+    }
+    /**
+     * 로또 등수 정하기
+     *  1등 : 6개 다 맞춤
+     *  2등 : 5개 맞춤
+     *  3등 : 4개 맞춤
+     *  4등 : 3개 맞춤
+     *  꽝 : 2개 이하
+     *  count 는 일치한 숫자의 갯수
+     */
+    public String rank(int count){
+        String result = "";
+        switch(count){
+            case 6: result = "1등"; break;
+            case 5: result = "2등"; break;
+            case 4: result = "3등"; break;
+            case 3: result = "4등"; break;
+            default: result = "꽝";
+        }
+        String prefix =(!result.equals("꽝")) ? "축하합니다!! " : "아쉽네요. 다음기회에 ...";
+        return result;
+    }
 }
